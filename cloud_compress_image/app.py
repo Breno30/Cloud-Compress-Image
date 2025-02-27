@@ -43,11 +43,19 @@ def lambda_handler(event, context):
         ContentType="image/jpeg"
     )
 
+    # Generate presigned URL for the uploaded image
+    url = s3.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': TARGET_BUCKET, 'Key': target_key},
+        ExpiresIn=3600  # URL expires in 1 hour
+    )
+
     return {
         "statusCode": 200,
         "body": json.dumps({
             "message": "Image processed successfully",
             "target_bucket": TARGET_BUCKET,
-            "target_key": target_key
+            "target_key": target_key,
+            "image_url": url
         })
     }
