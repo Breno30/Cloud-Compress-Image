@@ -15,6 +15,11 @@ def lambda_handler(event, context):
         
         response = s3.get_object(Bucket=source_bucket, Key=source_key)
         image_data = response['Body'].read()
+    if 'queryStringParameters' in event and 'image_s3_key' in event['queryStringParameters']:
+        image_s3_key = event['queryStringParameters']['image_s3_key']
+        image_s3_bucket = event['queryStringParameters']['image_s3_bucket'] = event['queryStringParameters']['image_s3_key']
+        response = s3.get_object(Bucket=image_s3_bucket, Key=image_s3_key)
+        image_data = response['Body'].read()
     else:
         try:
             body = event['body']
